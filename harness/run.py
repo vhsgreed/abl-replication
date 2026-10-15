@@ -28,6 +28,37 @@ def seed_for(cell_id, sample, attempt):
     return int(hashlib.sha256(f"{cell_id}|{sample}|{attempt}".encode()).hexdigest()[:8], 16) & 0x7FFFFFFF
 
 
+NEED_MB = 19000          # MemAvailable required before this runner loads a 16.8 GB Q4 model
+
+
+def mem_available_mb():
+    for l in open("/proc/meminfo"):
+        if l.startswith("MemAvailable:"):
+            return int(l.split()[1]) // 1024
+    return 0
+
+
+def ollama_busy():
+    """True if Ollama has any model resident (e.g. Hermes fell back to a local model)."""
+    try:
+        return bool(json.load(urllib.request.urlopen("http://127.0.0.1:11434/api/ps", timeout=3)).get("models"))
+    except Exception:
+        return False
+
+
+def wait_for_room(srv, deadline):
+    """Yield the machine: never co-load with an Ollama model; wait until RAM is free.
+    Two 16 GB models on this 27 GB box is what OOM-killed the Hermes desktop on 2026-10-15."""
+    while ollama_busy() or (srv.arm is None and mem_available_mb() < NEED_MB):
+        if srv.arm is not None:
+            print(f"{dt.datetime.now():%H:%M:%S} yielding: ollama model resident, stopping our server", flush=True)
+            srv.down()
+        if dt.datetime.now() >= deadline:
+            return False
+        time.sleep(30)
+    return True
+
+
 class Server:
     def __init__(self, np_):
         self.p, self.arm, self.np = None, None, np_
@@ -123,21 +154,22 @@ def main():
             for bi, block in enumerate(blocks):
                 order = arms if (sample + bi) % 2 == 0 else arms[::-1]   # alternate which arm goes first
                 for arm in order:
-                    todo = [c for c in cells if c["week"] in block and (c["cell_id"], sample) not in done[arm]]
-                    if not todo:
-                        continue
-                    if dt.datetime.now() >= deadline:
-                        print("deadline reached", flush=True)
-                        return
-                    srv.up(arm)
-                    with (out / f"{arm}.jsonl").open("a") as fh, ThreadPoolExecutor(a.np) as ex:
-                        for row in ex.map(lambda c: one(c, sample, arm), todo):
-                            fh.write(json.dumps(row) + "\n")
-                            fh.flush()
-                            os.fsync(fh.fileno())
-                            done[arm].add((row["cell_id"], sample))
-                            if dt.datetime.now() >= deadline:
-                                break
+                    while True:   # repeat until the block is done; yielding to Ollama may interrupt it
+                        todo = [c for c in cells if c["week"] in block and (c["cell_id"], sample) not in done[arm]]
+                        if not todo:
+                            break
+                        if dt.datetime.now() >= deadline or not wait_for_room(srv, deadline):
+                            print("deadline reached", flush=True)
+                            return
+                        srv.up(arm)
+                        with (out / f"{arm}.jsonl").open("a") as fh, ThreadPoolExecutor(a.np) as ex:
+                            for row in ex.map(lambda c: one(c, sample, arm), todo):
+                                fh.write(json.dumps(row) + "\n")
+                                fh.flush()
+                                os.fsync(fh.fileno())
+                                done[arm].add((row["cell_id"], sample))
+                                if dt.datetime.now() >= deadline or ollama_busy():
+                                    break
                     print(f"{dt.datetime.now():%H:%M:%S} sample={sample} block={bi} arm={arm} n={len(todo)}", flush=True)
                     if dt.datetime.now() >= deadline:
                         print("deadline reached", flush=True)
