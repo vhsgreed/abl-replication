@@ -28,9 +28,10 @@ def messages(cell):
             {"role": "user", "content": _usr.strip().format(closes_block=closes, **cell)}]
 
 
-def render(cell):
-    """Full prompt text incl. <bos>, non-thinking mode (template inserts an empty thought channel)."""
-    return _tpl.render(messages=messages(cell), bos_token="<bos>", add_generation_prompt=True, enable_thinking=False)
+def render(cell, thinking=False):
+    """Full prompt text incl. <bos>. Non-thinking mode (template inserts an empty thought channel).
+    thinking=True exists ONLY for the smoke negative control that must be caught as a leak."""
+    return _tpl.render(messages=messages(cell), bos_token="<bos>", add_generation_prompt=True, enable_thinking=thinking)
 
 
 def load_cells(split=None):

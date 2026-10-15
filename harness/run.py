@@ -21,6 +21,7 @@ SAMPLING = {"temperature": 1.0, "top_k": 64, "top_p": 0.95, "min_p": 0.0, "typic
             "samplers": ["top_k", "top_p", "temperature"]}
 N_PREDICT = 768
 MAX_ATTEMPTS = 3
+THINKING = False   # smoke negative control only
 
 
 def seed_for(cell_id, sample, attempt):
@@ -99,7 +100,7 @@ def post(path, body, timeout=900):
 
 
 def one(cell, sample, arm):
-    prompt = render(cell)
+    prompt = render(cell, thinking=THINKING)
     attempts = []
     for a in range(MAX_ATTEMPTS):
         s = seed_for(cell["cell_id"], sample, a)
@@ -135,7 +136,14 @@ def main():
     ap.add_argument("--deadline", required=True)
     ap.add_argument("--cells", default=None, help="comma list of cell_ids (smoke override)")
     ap.add_argument("--arms", default="base,abl")
+    ap.add_argument("--n-predict", type=int, default=768, help="smoke negative control only")
+    ap.add_argument("--attempts", type=int, default=3)
+    ap.add_argument("--thinking", action="store_true", help="smoke negative control only")
     a = ap.parse_args()
+    global N_PREDICT, MAX_ATTEMPTS, THINKING
+    N_PREDICT, MAX_ATTEMPTS, THINKING = a.n_predict, a.attempts, a.thinking
+    if a.split == "grid" and (N_PREDICT != 768 or MAX_ATTEMPTS != 3 or THINKING):
+        sys.exit("control flags are not allowed on the grid")
     deadline = dt.datetime.fromisoformat(a.deadline)
     out = ROOT / "out" / a.run
     out.mkdir(parents=True, exist_ok=True)
