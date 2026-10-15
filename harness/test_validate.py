@@ -45,3 +45,9 @@ def test_all():
 if __name__ == "__main__":
     test_all()
     print(f"{len(CASES)} validator cases passed")
+
+
+def test_eos_strip_is_runner_side():
+    # the validator itself must still reject a raw end-of-turn token; only the runner strips one trailing copy
+    ok, _, f = validate(G + "<turn|>", "eos")
+    assert not ok and any("leak" in x for x in f)

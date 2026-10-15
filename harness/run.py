@@ -105,7 +105,13 @@ def one(cell, sample, arm):
         s = seed_for(cell["cell_id"], sample, a)
         t = time.time()
         r = post("/completion", {"prompt": prompt, "n_predict": N_PREDICT, "seed": s, "cache_prompt": True, **SAMPLING})
-        ok, rec, fails = validate(r.get("content"), r.get("stop_type") if not r.get("truncated") else "ctx_truncated")
+        text = r.get("content")
+        stop = r.get("stop_type") if not r.get("truncated") else "ctx_truncated"
+        # -sp prints special tokens so a leaked thought channel stays visible; the single
+        # end-of-turn token that ends a normal eos stop is expected and removed before validation.
+        if stop == "eos" and isinstance(text, str) and text.endswith("<turn|>"):
+            text = text[:-len("<turn|>")]
+        ok, rec, fails = validate(text, stop)
         attempts.append({"attempt": a, "seed": s, "ok": ok, "failures": fails, "stop_type": r.get("stop_type"),
                          "prompt_tokens": r.get("tokens_evaluated"), "out_tokens": r.get("tokens_predicted"),
                          "wall_s": round(time.time() - t, 2), "text": r.get("content")})
