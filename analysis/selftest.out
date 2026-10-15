@@ -1,0 +1,6 @@
+null      samples=3 pass_rate=0.005
+null      samples=5 pass_rate=0.015
+effect6   samples=3 pass_rate=0.877
+effect6   samples=5 pass_rate=0.990
+effect12  samples=3 pass_rate=1.000
+effect12  samples=5 pass_rate=1.000
