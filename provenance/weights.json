@@ -1,0 +1,18 @@
+{
+ "google/gemma-4-26B-A4B-it@4d7ae4984b7db7de8f8457170b3f1a419ee76d52/model-00001-of-00002.safetensors": {
+  "sha256": "1127684971bbca40465435a5cad69d67ad603bf5e61c6dfd5561fae4a3bcfdb3",
+  "ok": true
+ },
+ "google/gemma-4-26B-A4B-it@4d7ae4984b7db7de8f8457170b3f1a419ee76d52/model-00002-of-00002.safetensors": {
+  "sha256": "aab47033e1e8a492ef8e581efae1cf36478d0433567e7729b3c1728bc8970db7",
+  "ok": true
+ },
+ "huihui-ai/Huihui-gemma-4-26B-A4B-it-abliterated@bfa658000df7d734e0946595ab832abb7e34b1be/model-00001-of-00002.safetensors": {
+  "sha256": "ef1e7aefbbe30b7747fc6065b1e8377fdc44a9f469344fc9b21694eea01ac8dd",
+  "ok": true
+ },
+ "huihui-ai/Huihui-gemma-4-26B-A4B-it-abliterated@bfa658000df7d734e0946595ab832abb7e34b1be/model-00002-of-00002.safetensors": {
+  "sha256": "d44f125b06d8151557dd8af4547dc7a5556577355e793a6e0c362e34069857a2",
+  "ok": true
+ }
+}

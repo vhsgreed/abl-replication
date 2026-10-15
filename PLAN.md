@@ -1,6 +1,6 @@
 # Pre-registration: does abliteration's off-target optimism replicate on an open task?
 
-Status: DRAFT 2026-10-15, frozen at the git tag `freeze-v1` (commit before any grid output exists).
+Status: FROZEN 2026-10-15 at git tag `freeze-v1`. Confirmatory runs start only after this tag is public (see change log).
 Author: Karl Sundström (agentrecourse.org), with Hermes Agent. Licence: code MIT, data CC BY 4.0.
 
 ## 0. Background and why this study exists
@@ -117,3 +117,16 @@ Any change after `freeze-v1` is appended below with date and reason; earlier tex
 Bugs found in harness or scorer get an errata entry committed before the re-run.
 
 - 2026-10-15: draft.
+- 2026-10-15 (before freeze): a first grid run `grid1` (16:48-20:42 CEST, 515 decisions: base 195,
+  abl 320, sample 0 only) was generated from the plan as committed locally at 3746fb1..e9f18ed, BEFORE
+  the repository was public. Because a local git timestamp cannot be verified by outsiders, `grid1` is
+  set aside as a PILOT: it is excluded from every confirmatory test and reported separately as a pilot.
+  Only health checks were run on it (validity, token counts, prompt/seed identity via
+  `harness/health.py`); no arm comparison of stance, confession length or confidence was computed.
+  Confirmatory data = run `grid2` and later, all started after the public push of tag `freeze-v1`.
+- 2026-10-15 (before freeze): pilot health showed both arms use only confidence values 0.55/0.60/0.65
+  and p_wrong = 1 - confidence in every output. Neither is a primary outcome; the exploratory confidence
+  analyses will be coarse and are reported as such. No change to H1-H3 or the criteria.
+- 2026-10-15 (before freeze): runner hardening after an OOM incident (own capped systemd unit, yields
+  to Ollama), and stripping of the single trailing end-of-turn token before validation. Validator rules
+  unchanged; both changes predate all grid output.

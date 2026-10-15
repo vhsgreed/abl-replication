@@ -1,2 +1,10 @@
-{"base": {"gguf": "/home/karl/models/gguf/google-gemma-4-26B-A4B-it-Q4_K_M.gguf", "sha256": "2289deaba79c84dfa5727922ac0e7aee2a4807cc5b438faebdb75644e4856c7c"},
- "abl":  {"gguf": "/home/karl/models/gguf/huihui-gemma-4-26B-A4B-it-abliterated-Q4_K_M.gguf", "sha256": "PENDING"}}
+{
+ "base": {
+  "gguf": "/home/karl/models/gguf/google-gemma-4-26B-A4B-it-Q4_K_M.gguf",
+  "sha256": "2289deaba79c84dfa5727922ac0e7aee2a4807cc5b438faebdb75644e4856c7c"
+ },
+ "abl": {
+  "gguf": "/home/karl/models/gguf/huihui-gemma-4-26B-A4B-it-abliterated-Q4_K_M.gguf",
+  "sha256": "e0af1c0bbf64714c6633c87fd684742aa5b82a954757446ced66bb04c34a5909"
+ }
+}
