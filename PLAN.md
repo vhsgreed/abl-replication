@@ -130,3 +130,20 @@ Bugs found in harness or scorer get an errata entry committed before the re-run.
 - 2026-10-15 (before freeze): runner hardening after an OOM incident (own capped systemd unit, yields
   to Ollama), and stripping of the single trailing end-of-turn token before validation. Validator rules
   unchanged; both changes predate all grid output.
+- 2026-10-17: publication impact metric registered (added post-freeze; touches no hypothesis, bar or
+  analysis). PRIMARY: within 90 days of the article going live, at least one of (a) a reply, issue or
+  citation from the authors of arXiv 2607.17427 / Zenodo 10.5281/zenodo.21314839, (b) inclusion in a
+  curated refusal-suppression index (e.g. ant-research/Awesome-Refusal-Suppression), (c) a named
+  mention in an AI-safety or interpretability newsletter or podcast. Route (a) is the target: the
+  study replicates a generation step their data release cannot re-run. SECONDARY (not scored): one
+  Hacker News or r/LocalLLaMA thread clearing 100 points. TRACKED ONLY: umami visits, repo clones.
+- 2026-10-17: packaging fixed as part of the deliverable: arXiv cross-post (cs.CL) plus a HuggingFace
+  papers listing, in addition to the public repo, frozen prompts and the one-command regeneration,
+  because all three acknowledgment routes reward those artifacts.
+- 2026-10-17: pilot disclosure. Refusal-boundary pilots (~/abliteration-study/pilot-1: 24 framed
+  journaling probes; pilot-2: 1,200 bare runs on XSTest/AdvBench/HarmBench across two model pairs,
+  seed 42) measure REFUSAL RATES, a different axis from H1-H3, and are excluded from every test in
+  this study. Their finding (aligned over-refusal 2-8%, abliteration drops harmful refusal 72-98 pp,
+  role framing collapses refusals to 0/16) is pilot evidence for a candidate Study 3 (over-refusal
+  equivalence, safety-refusal delta, framing factor), which is NOT registered here and NOT authorized
+  to run before grid2 and the queued LittleBit study are done.
