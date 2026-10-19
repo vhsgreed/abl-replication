@@ -13,6 +13,12 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 LLAMA = pathlib.Path.home() / "src/llama.cpp/build/bin/llama-server"
 ARMS = json.load(open(ROOT / "harness" / "arms.json"))          # {"base": {"gguf": ..., "sha256": ...}, "abl": {...}}
 PORT = 18080
+# BF16 stack (PLAN.md s1; change log 2026-10-19): a rented GPU's llama-server can be driven
+# instead of a locally spawned one. Set ABL_REMOTE_BASE / ABL_REMOTE_ABL to each arm's base
+# URL (e.g. http://127.0.0.1:18081 over an SSH tunnel) and ABL_STACK=<label> for the row
+# record. Request bodies are byte-identical to the local path; when unset, nothing changes.
+REMOTE = {a: os.environ.get("ABL_REMOTE_" + a.upper()) for a in ("base", "abl")}
+STACK = os.environ.get("ABL_STACK", "q4-local")
 # Sampling: Gemma generation_config (temp 1.0, top_k 64, top_p 0.95) = the paper's settings.
 # Every other llama.cpp sampler is pinned OFF so defaults (min_p 0.05!) cannot leak in.
 SAMPLING = {"temperature": 1.0, "top_k": 64, "top_p": 0.95, "min_p": 0.0, "typical_p": 1.0,
@@ -68,6 +74,16 @@ class Server:
         if self.arm == arm:
             return
         self.down()
+        if REMOTE[arm]:
+            for _ in range(60):
+                try:
+                    if json.load(urllib.request.urlopen(f"{REMOTE[arm]}/health", timeout=2)).get("status") == "ok":
+                        self.arm = arm
+                        return
+                except Exception:
+                    pass
+                time.sleep(1)
+            raise RuntimeError(f"remote server for {arm} not healthy at {REMOTE[arm]}")
         log = open(ROOT / "out" / f"server_{arm}.log", "a")
         self.p = subprocess.Popen([str(LLAMA), "-m", ARMS[arm]["gguf"], "--host", "127.0.0.1", "--port", str(PORT),
                                    "-c", str(4096 * self.np), "-np", str(self.np), "-t", "8", "-tb", "16",
@@ -94,8 +110,9 @@ class Server:
         self.p, self.arm = None, None
 
 
-def post(path, body, timeout=900):
-    req = urllib.request.Request(f"http://127.0.0.1:{PORT}{path}", json.dumps(body).encode(), {"Content-Type": "application/json"})
+def post(path, body, arm, timeout=900):
+    base = REMOTE[arm] or f"http://127.0.0.1:{PORT}"
+    req = urllib.request.Request(f"{base}{path}", json.dumps(body).encode(), {"Content-Type": "application/json"})
     return json.load(urllib.request.urlopen(req, timeout=timeout))
 
 
@@ -105,7 +122,7 @@ def one(cell, sample, arm):
     for a in range(MAX_ATTEMPTS):
         s = seed_for(cell["cell_id"], sample, a)
         t = time.time()
-        r = post("/completion", {"prompt": prompt, "n_predict": N_PREDICT, "seed": s, "cache_prompt": True, **SAMPLING})
+        r = post("/completion", {"prompt": prompt, "n_predict": N_PREDICT, "seed": s, "cache_prompt": True, **SAMPLING}, arm)
         text = r.get("content")
         stop = r.get("stop_type") if not r.get("truncated") else "ctx_truncated"
         # -sp prints special tokens so a leaked thought channel stays visible; the single
@@ -121,7 +138,7 @@ def one(cell, sample, arm):
     return {"arm": arm, "cell_id": cell["cell_id"], "segment": cell["segment"], "week": cell["week"],
             "ticker": cell["ticker"], "split": cell["split"], "sample": sample,
             "prompt_render_sha": sha(prompt), "prompt_file_sha": PROMPT_SHA, "template_sha": TEMPLATE_SHA,
-            "model_sha256": ARMS[arm]["sha256"], "first_attempt_ok": attempts[0]["ok"],
+            "model_sha256": ARMS[arm]["sha256"], "stack": STACK, "first_attempt_ok": attempts[0]["ok"],
             "ok": attempts[-1]["ok"], "n_attempts": len(attempts), "result": rec if attempts[-1]["ok"] else None,
             "attempts": attempts, "ts": dt.datetime.now().isoformat(timespec="seconds")}
 
@@ -172,7 +189,7 @@ def main():
                         todo = [c for c in cells if c["week"] in block and (c["cell_id"], sample) not in done[arm]]
                         if not todo:
                             break
-                        if dt.datetime.now() >= deadline or not wait_for_room(srv, deadline):
+                        if dt.datetime.now() >= deadline or (not all(REMOTE.values()) and not wait_for_room(srv, deadline)):
                             print("deadline reached", flush=True)
                             return
                         srv.up(arm)
@@ -182,7 +199,7 @@ def main():
                                 fh.flush()
                                 os.fsync(fh.fileno())
                                 done[arm].add((row["cell_id"], sample))
-                                if dt.datetime.now() >= deadline or ollama_busy():
+                                if dt.datetime.now() >= deadline or (not all(REMOTE.values()) and ollama_busy()):
                                     break
                     print(f"{dt.datetime.now():%H:%M:%S} sample={sample} block={bi} arm={arm} n={len(todo)}", flush=True)
                     if dt.datetime.now() >= deadline:

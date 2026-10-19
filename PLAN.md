@@ -147,3 +147,10 @@ Bugs found in harness or scorer get an errata entry committed before the re-run.
   role framing collapses refusals to 0/16) is pilot evidence for a candidate Study 3 (over-refusal
   equivalence, safety-refusal delta, framing factor), which is NOT registered here and NOT authorized
   to run before grid2 and the queued LittleBit study are done.
+- 2026-10-19 (before any BF16 data): harness extended for the BF16 stack this plan registered in
+  s1. `harness/run.py` can now drive a remote llama-server via ABL_REMOTE_BASE / ABL_REMOTE_ABL
+  base URLs (SSH tunnels to a rented box serving the BF16 GGUFs) and records a `stack` field per
+  row (ABL_STACK, default "q4-local"). Request bodies, seeds, prompts and sampling are
+  byte-identical to the local path; with the env unset the Q4 behaviour is unchanged. Reason:
+  the frozen runner only spawned a local CPU llama-server. Scorer self-test re-run green after
+  the change. No hypothesis, bar or criterion touched.
