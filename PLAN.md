@@ -186,3 +186,10 @@ Bugs found in harness or scorer get an errata entry committed before the re-run.
   cross-post: community posts (the registered secondary bar). Also recorded: the author accepts
   the personal email in the public commit history; no history rewrite (and therefore every cited
   hash stays valid).
+- 2026-10-19 (packaging amendment 2): the secondary impact bar loses the Hacker News route
+  permanently (Karl: "never Show HN" or any HN posting; standing rule). The secondary bar is now
+  an r/LocalLLaMA thread clearing 100 points. Bluesky added as a distribution route, with a
+  standing rule: no Bluesky post without Karl's per-post approval. The arXiv cs.CL cross-post is
+  UN-dropped: the author created an arXiv account; a LaTeX/PDF submission package is to be
+  prepared and submitted through his account. HF papers listing stays dropped (it indexes arXiv
+  preprints and needs the arXiv ID to exist first; revisit after the cross-post).
