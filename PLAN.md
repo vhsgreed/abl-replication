@@ -169,3 +169,12 @@ Bugs found in harness or scorer get an errata entry committed before the re-run.
   -> reasoning_or_control_leak on 8/8). Gate PASS. Full run `grid_bf16` launched 10:52 CEST
   (unit abl-grid_bf16, ABL_STACK=bf16-vast-2xA100SXM4, np=4): ~2 s/decision aggregate,
   5,760 decisions, ETA ~3.2h, projected run cost ~$11 of the $25 credit (setup ~$5 so far).
+- 2026-10-19 (grid_bf16 COMPLETE 13:50, 5760/5760, 100% final valid, first-try 2879/2880 per arm;
+  instance 56690152 destroyed after the run, total spend $20.30 of $25 credit): scored once against
+  the frozen bars. BF16 stack: H1 optimism PASS US +6.81pp [4.17, 9.51], EU +5.07pp [2.15, 8.19];
+  H2 confession words PASS US +2.93 [2.66, 3.21], EU +3.45 [3.13, 3.75]. Criterion 2 (both stacks)
+  and criterion 3 (both segments) MET. VERDICT: H1 and H2 REPLICATED on the open task, both stacks,
+  both segments; H3 passes. Effect sizes smaller than the original (+12.2pp / +4.0 words) with the
+  same signs. Exploratory: mean confidence +0.016..+0.017 (BF16) vs +0.007..+0.011 (Q4); first-try
+  validity on BF16 is 2879/2880 per arm vs Q4's abl 2871/2880, so most degenerate outputs were a
+  quantization effect, not the weight edit. Next: article draft + registered packaging.
