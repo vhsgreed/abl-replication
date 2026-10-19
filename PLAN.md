@@ -154,3 +154,8 @@ Bugs found in harness or scorer get an errata entry committed before the re-run.
   byte-identical to the local path; with the env unset the Q4 behaviour is unchanged. Reason:
   the frozen runner only spawned a local CPU llama-server. Scorer self-test re-run green after
   the change. No hypothesis, bar or criterion touched.
+- 2026-10-19 (Tier-0 smoke of the remote path, free on geekom): 4/4 smoke decisions valid
+  first-try through ABL_REMOTE_* URLs; render-sha and seed parity across arms exact; row `stack`
+  recorded; negative control (n_predict 24) caught as truncated on all 3 attempts. Remote plumbing
+  cleared before any metered minute. BF16 GGUF sha256 recorded in provenance/bf16_gguf_sha256.txt
+  (google e59819d3..., huihui 5af66a95...); box conversions must match these.

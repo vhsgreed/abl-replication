@@ -1,0 +1,2 @@
+e59819d361213dc92525fc5d27a829383cbb0cd07dd81624cdbd932b7f81193b  google-gemma-4-26B-A4B-it-BF16.gguf
+5af66a953355d0c22fb696481983b91b925d0e0c3c88f3ba04eb68373329ef5e  huihui-gemma-4-26B-A4B-it-abliterated-BF16.gguf
