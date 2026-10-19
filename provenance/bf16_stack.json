@@ -1,0 +1,21 @@
+{
+  "stack": "bf16-vast-2xA100SXM4",
+  "provider": "vast.ai",
+  "instance_id": 56690152,
+  "offer_id": 47141478,
+  "machine": "2x A100 SXM4 80GB (160GB VRAM total), 200GB disk, Georgia US",
+  "price_usd_per_hour": 3.37,
+  "image": "nvidia/cuda:12.4.1-devel-ubuntu22.04",
+  "llama_cpp_commit": "fd55cb98fe29d3df0054d3f3e6e6f15958ea72ab",
+  "convert_env": "python3.12 venv; transformers==5.19.0 numpy==2.2.6 safetensors==0.8.0 tokenizers==0.23.3 sentencepiece==0.2.2 torch==2.11.0+cpu",
+  "weights": {
+    "base": {"repo": "google/gemma-4-26B-A4B-it", "revision": "4d7ae4984b7db7de8f8457170b3f1a419ee76d52"},
+    "abl": {"repo": "huihui-ai/Huihui-gemma-4-26B-A4B-it-abliterated", "revision": "bfa658000df7d734e0946595ab832abb7e34b1be"}
+  },
+  "expected_gguf_sha256": {
+    "google-bf16.gguf": "e59819d361213dc92525fc5d27a829383cbb0cd07dd81624cdbd932b7f81193b",
+    "huihui-bf16.gguf": "5af66a953355d0c22fb696481983b91b925d0e0c3c88f3ba04eb68373329ef5e"
+  },
+  "serving": "llama-server CUDA build of the pinned commit; base on GPU0 :18080, abl on GPU1 :18081; -c 16384 -np 4 -t 8 -tb 16 -sp --no-webui --seed 0; driven from geekom over SSH tunnels by harness/run.py with ABL_REMOTE_BASE/ABL_REMOTE_ABL",
+  "created": "2026-10-19"
+}
