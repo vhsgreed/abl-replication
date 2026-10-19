@@ -159,3 +159,13 @@ Bugs found in harness or scorer get an errata entry committed before the re-run.
   recorded; negative control (n_predict 24) caught as truncated on all 3 attempts. Remote plumbing
   cleared before any metered minute. BF16 GGUF sha256 recorded in provenance/bf16_gguf_sha256.txt
   (google e59819d3..., huihui 5af66a95...); box conversions must match these.
+- 2026-10-19 (box smoke gate, on instance 56690152): box GGUF conversions are BYTE-IDENTICAL to
+  geekom's (sha256 both arms match provenance exactly). Pitfall found and fixed before scoring:
+  the GGUF metadata embeds the source directory basename, so converting from differently named
+  dirs produced same-size-but-different files; re-converted from dirs named exactly as geekom's
+  checkouts. Servers: GPU0 base :18080, GPU1 abl :18081 (BF16, -np 4). Smoke via the remote
+  path: 16/16 valid first-try at np=1 and np=4, render-sha and seed parity exact, prompt-token
+  parity per cell; negative controls both caught (ctl_trunc -> truncated:limit on 8/8; ctl_think
+  -> reasoning_or_control_leak on 8/8). Gate PASS. Full run `grid_bf16` launched 10:52 CEST
+  (unit abl-grid_bf16, ABL_STACK=bf16-vast-2xA100SXM4, np=4): ~2 s/decision aggregate,
+  5,760 decisions, ETA ~3.2h, projected run cost ~$11 of the $25 credit (setup ~$5 so far).
