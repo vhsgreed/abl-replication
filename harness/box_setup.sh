@@ -45,20 +45,21 @@ if [ ! -x /root/venv-convert/bin/python ]; then
       tokenizers==0.23.3 sentencepiece==0.2.2 "huggingface_hub[hf_xet]"
 fi
 
-# 3. pinned weight downloads
+# 3. pinned weight downloads (dir basenames MUST match geekom's checkouts: the GGUF
+# metadata embeds the source dir name, so different names change the sha256)
 mkdir -p "$H" "$G"
-[ -f "$H/google/model.safetensors.index.json" ] || \
-  /root/venv-convert/bin/hf download google/gemma-4-26B-A4B-it --revision "$BASE_REV" --local-dir "$H/google"
-[ -f "$H/huihui/model.safetensors.index.json" ] || \
-  /root/venv-convert/bin/hf download huihui-ai/Huihui-gemma-4-26B-A4B-it-abliterated --revision "$ABL_REV" --local-dir "$H/huihui"
+[ -f "$H/gemma-4-26B-A4B-it/model.safetensors.index.json" ] || \
+  /root/venv-convert/bin/hf download google/gemma-4-26B-A4B-it --revision "$BASE_REV" --local-dir "$H/gemma-4-26B-A4B-it"
+[ -f "$H/huihui-gemma-4-26B-A4B-it-abliterated/model.safetensors.index.json" ] || \
+  /root/venv-convert/bin/hf download huihui-ai/Huihui-gemma-4-26B-A4B-it-abliterated --revision "$ABL_REV" --local-dir "$H/huihui-gemma-4-26B-A4B-it-abliterated"
 
 # 4. convert both to BF16 GGUF (identical command to prep.sh)
 cd /root/llama.cpp
 if [ ! -s "$G/google-bf16.gguf" ]; then
-  /root/venv-convert/bin/python convert_hf_to_gguf.py "$H/google" --outtype bf16 --outfile "$G/google-bf16.gguf"
+  /root/venv-convert/bin/python convert_hf_to_gguf.py "$H/gemma-4-26B-A4B-it" --outtype bf16 --outfile "$G/google-bf16.gguf"
 fi
 if [ ! -s "$G/huihui-bf16.gguf" ]; then
-  /root/venv-convert/bin/python convert_hf_to_gguf.py "$H/huihui" --outtype bf16 --outfile "$G/huihui-bf16.gguf"
+  /root/venv-convert/bin/python convert_hf_to_gguf.py "$H/huihui-gemma-4-26B-A4B-it-abliterated" --outtype bf16 --outfile "$G/huihui-bf16.gguf"
 fi
 
 # 5. hash gate: the box's GGUFs must be byte-identical to geekom's conversions

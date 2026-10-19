@@ -2,3 +2,5 @@
 out/
 __pycache__/
 *.gguf
+# drafts stay private until Karl's voice pass (publication checklist rule)
+journal/

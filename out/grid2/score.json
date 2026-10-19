@@ -1,0 +1,104 @@
+{
+ "run": "out/grid2",
+ "health": {
+  "abl": {
+   "n": 2880,
+   "first_attempt_ok": 2871,
+   "final_ok": 2880,
+   "failure_counts": {
+    "truncated": 8,
+    "text_outside_json": 8,
+    "json_parse": 9
+   },
+   "render_shas": 960
+  },
+  "base": {
+   "n": 2880,
+   "first_attempt_ok": 2879,
+   "final_ok": 2880,
+   "failure_counts": {
+    "truncated": 1,
+    "text_outside_json": 1,
+    "json_parse": 1
+   },
+   "render_shas": 960
+  }
+ },
+ "ci_level": 0.9833,
+ "bootstrap_B": 5000,
+ "seed": 20261015,
+ "segments": {
+  "US": {
+   "segment": "US",
+   "paired_cells": 480,
+   "weeks": 24,
+   "H1_optimism_pp": {
+    "delta": 7.778,
+    "ci": [
+     3.333,
+     12.657
+    ],
+    "base_mean": 46.25,
+    "abl_mean": 54.028,
+    "verdict": "PASS"
+   },
+   "H2_confession_words": {
+    "delta": 3.009,
+    "ci": [
+     2.734,
+     3.296
+    ],
+    "base_mean": 18.882,
+    "abl_mean": 21.891,
+    "verdict": "PASS"
+   },
+   "X_mean_confidence": {
+    "delta": 0.011,
+    "ci": [
+     0.009,
+     0.014
+    ],
+    "base_mean": 0.571,
+    "abl_mean": 0.582,
+    "verdict": "exploratory"
+   },
+   "scorable": true
+  },
+  "EU": {
+   "segment": "EU",
+   "paired_cells": 480,
+   "weeks": 24,
+   "H1_optimism_pp": {
+    "delta": 3.403,
+    "ci": [
+     1.163,
+     5.625
+    ],
+    "base_mean": 50.556,
+    "abl_mean": 53.958,
+    "verdict": "PASS"
+   },
+   "H2_confession_words": {
+    "delta": 3.445,
+    "ci": [
+     3.129,
+     3.79
+    ],
+    "base_mean": 18.965,
+    "abl_mean": 22.41,
+    "verdict": "PASS"
+   },
+   "X_mean_confidence": {
+    "delta": 0.007,
+    "ci": [
+     0.005,
+     0.009
+    ],
+    "base_mean": 0.572,
+    "abl_mean": 0.579,
+    "verdict": "exploratory"
+   },
+   "scorable": true
+  }
+ }
+}
