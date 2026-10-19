@@ -178,3 +178,11 @@ Bugs found in harness or scorer get an errata entry committed before the re-run.
   same signs. Exploratory: mean confidence +0.016..+0.017 (BF16) vs +0.007..+0.011 (Q4); first-try
   validity on BF16 is 2879/2880 per arm vs Q4's abl 2871/2880, so most degenerate outputs were a
   quantization effect, not the weight edit. Next: article draft + registered packaging.
+- 2026-10-19 (packaging amendment, post-publication): the registered arXiv cs.CL cross-post and
+  HuggingFace papers listing are dropped. Reason (Karl): he has no arXiv account, and HF papers
+  pages index arXiv preprints, so both routes are unavailable without one. The canonical artifacts
+  are the article URL (agentrecourse.org/journal/abliteration-open-task.html) and the public repo;
+  the impact metric and its 2027-01-17 deadline are unchanged. Distribution substitutes the
+  cross-post: community posts (the registered secondary bar). Also recorded: the author accepts
+  the personal email in the public commit history; no history rewrite (and therefore every cited
+  hash stays valid).
